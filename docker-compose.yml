@@ -70,3 +70,43 @@ services:
     labels:
       - "logging=true"
     logging: *default-logging
+  frontend:
+    image: lblod/frontend-local-harvester
+    environment:
+      EMBER_METIS_BASE_URL: "http://data.lblod.info/"
+    links:
+      - identifier:backend
+    labels:
+      - "logging=true"
+    restart: always
+    logging: *default-logging
+  # Metis
+  uri-info:
+    image: redpencil/mu-uri-info-service:0.2.1
+  resource-labels-cache:
+    image: semtech/mu-cache:2.0.2
+    links:
+      - resource-labels:backend
+  resource-labels:
+    image: lblod/resource-label-service:0.3.2
+  make-object:
+    image: lblod/ldes-make-object-service
+    environment:
+      LANDING_ZONE_GRAPH: "http://mu.semte.ch/graphs/ldes"
+      TARGET_GRAPH: "http://mu.semte.ch/graphs/public"
+  consumer:
+    image: redpencil/ldes-consumer
+    environment:
+      CRON_PATTERN: "*/10 * * * * *"
+      # change the  environment variable below to test an other ldes endpoint
+      LDES_ENDPOINT_VIEW: "https://dev.roadsigns.lblod.info/ldes-mow-register/1"
+      MU_SPARQL_ENDPOINT: "http://database:8890/sparql"
+      MU_APPLICATION_GRAPH: "http://mu.semte.ch/graphs/ldes"
+      INGEST_MODE: ALL
+      LDES_VERSION_OF_PATH: "http://purl.org/dc/terms/isVersionOf"
+      LDES_TIMESTAMP_PATH: "http://www.w3.org/ns/prov#generatedAtTime"
+      PERSIST_STATE: "true"
+      LOG_SPARQL_ALL: "true"
+      LOG_LEVEL: "debug"
+    volumes:
+        - ./data/ldes-consumer:/data
