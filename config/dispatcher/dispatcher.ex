@@ -27,6 +27,9 @@ defmodule Dispatcher do
     forward conn, path, "http://frontend/@appuniversum/"
   end
 
+  match "/sparql", %{ layer: :static } do
+    forward conn, [], "http://frontend/index.html"
+  end
 
   ###############
   # SPARQL

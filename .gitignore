@@ -1,8 +1,9 @@
 # Virtuoso files /data/db
 /data/db/*
+/data/ldes-consumer/*
 /data/authorization/*
 /data/db/virtuoso.ini
 !/data/db/toLoad
 !/data/db/toLoad/*
-
+.env
 docker-compose.override.yml
