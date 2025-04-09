@@ -12,7 +12,7 @@ defmodule Dispatcher do
     |> Plug.Conn.put_resp_header( "access-control-allow-methods", "*" )
     |> send_resp( 200, "{ \"message\": \"ok\" }" )
   end
-  define_layers [ :static, :sparql, :api_services, :frontend_fallback, :resources, :not_found ]
+  define_layers [ :static, :sparql, :frontend_fallback]
 
   # frontend
   match "/index.html", %{ layer: :static } do
@@ -27,6 +27,10 @@ defmodule Dispatcher do
     forward conn, path, "http://frontend/@appuniversum/"
   end
 
+
+  get "/sparql", %{ layer: :static, accept: %{ html: true} } do
+    forward conn, [], "http://frontend/index.html"
+  end
 
   ###############
   # SPARQL
@@ -54,7 +58,7 @@ defmodule Dispatcher do
 
 
   
-  match "/*path", %{ layer: :frontend_fallback, accept: %{ html: true } } do
+  match "/*path", %{ layer: :frontend_fallback, accept: %{ any: true } } do
     forward conn, [], "http://frontend/index.html"
   end
 end
