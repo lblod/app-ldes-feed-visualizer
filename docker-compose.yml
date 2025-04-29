@@ -97,7 +97,6 @@ services:
   consumer:
     image: redpencil/ldes-consumer
     environment:
-      CRON_PATTERN: "*/10 * * * * *"
       # change the  environment variable below to test an other ldes endpoint
       LDES_ENDPOINT_VIEW: "https://dev.roadsigns.lblod.info/ldes-mow-register/1"
       MU_SPARQL_ENDPOINT: "http://database:8890/sparql"
